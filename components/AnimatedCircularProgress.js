@@ -35,18 +35,29 @@ export default class AnimatedCircularProgress extends React.PureComponent {
     }
 
     componentDidMount() {
-        const { duration, innerRadius, radius, startDeg, endDeg } = this.props;
+        this.playAnimation();
+    }
 
-        if (startDeg > endDeg) console.warn('AnimatedCircularProgress: startDeg must smaller than endDeg');
-        if (innerRadius > radius)
-            console.warn('AnimatedCircularProgress: innerRadius must smaller than radius');
+    componentWillReceiveProps(next) {
+      if (next.endDeg !== this.props.endDeg || next.startDeg !== this.props.startDeg) {
+        this.playAnimation(next);
+      }
+    }
 
-        Animated.timing(this.animatedValue, {
-            toValue: 1,
-            duration: (duration / 360) * (endDeg - startDeg),
-            useNativeDriver: false,
-            easing: Easing.linear,
-        }).start();
+    playAnimation(next){
+      let { duration, innerRadius, radius, startDeg, endDeg } = next ? next : this.props;
+
+      if (startDeg > endDeg) console.warn('AnimatedCircularProgress: startDeg must smaller than endDeg');
+      if (innerRadius > radius)
+          console.warn('AnimatedCircularProgress: innerRadius must smaller than radius');
+
+      this.animatedValue = new Animated.Value(0);
+      Animated.timing(this.animatedValue, {
+          toValue: 1,
+          duration: (duration / 360) * (endDeg - startDeg),
+          useNativeDriver: false,
+          easing: Easing.linear,
+      }).start();
     }
 
     renderHalf = (color, transforms = [], otherStyle = {}) => {
