@@ -5,7 +5,7 @@ import { View, StyleSheet, Animated, ViewPropTypes, Easing } from 'react-native'
 // compatibility for react-native versions < 0.44
 const ViewPropTypesStyle = ViewPropTypes ? ViewPropTypes.style : View.propTypes.style;
 
-export default class AnimatedCircularProgress extends React.PureComponent {
+export default class AnimatedCircularProgress extends React.Component {
     static propTypes = {
         backgroundColor: PropTypes.string,
         color: PropTypes.string,
@@ -38,10 +38,12 @@ export default class AnimatedCircularProgress extends React.PureComponent {
         this.playAnimation();
     }
 
-    componentWillReceiveProps(next) {
+    shouldComponentUpdate(next) {
       if (next.endDeg !== this.props.endDeg || next.startDeg !== this.props.startDeg) {
         this.playAnimation(next);
+        return true;
       }
+      return false;
     }
 
     playAnimation(next){
